@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy 7th Month Anniversary 💖</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        
+        body { 
+            background: linear-gradient(135deg, #ffe5ec 0%, #fff0f3 50%, #ffe5ec 100%); /* ไล่สีชมพูพาสเทลละมุน */
+            color: #4a4a4a; 
+            font-family: 'Kanit', sans-serif; 
+            margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; overflow: hidden;
+            position: relative;
+        }
+
+        /* แผงควบคุมเพลงสุดพรีเมี่ยม อยู่ "ขวาล่าง" ของจอมือถือ */
+        .music-control-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 5%;
+            width: 90%;
+            max-width: 340px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 20px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(255, 143, 171, 0.3), inset 0 1px 0 rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            border: 1.5px solid #ffccd5;
+        }
+
+        .music-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            max-width: 160px;
+        }
+
+        .track-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #ff7096;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .artist-name {
+            font-size: 0.75rem;
+            color: #a3a3a3;
+        }
+
+        .music-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .music-btn {
+            background: linear-gradient(135deg, #ff8fab 0%, #ff7096 100%);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(255, 112, 150, 0.4);
+            transition: 0.2s ease;
+        }
+        .music-btn:hover { transform: scale(1.05); }
+        .music-btn:active { transform: scale(0.95); }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 55px;
+            height: 5px;
+            background: #ffe5ec;
+            border-radius: 5px;
+            outline: none;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff7096;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* ตัวการ์ดเนื้อหาหรูหรา แสงเงาพรีเมี่ยม ปรับระยะเว้นหลบแผงควบคุมขวาล่าง */
+        .card { 
+            width: 90%; max-width: 360px; padding: 25px; 
+            border-radius: 40px; 
+            background: #e2bdf0; 
+            box-shadow: 0 25px 55px rgba(255, 143, 171, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5); 
+            text-align: center;
+            display: none; 
+            z-index: 10;
+            border: 2px solid rgba(255, 215, 0, 0.25); 
+            margin-bottom: 70px; 
+        }
+
+        h1 { 
+            background: linear-gradient(135deg, #ff8fab 0%, #ff7096 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.65rem; margin: 12px 0 8px 0; font-weight: 600; 
+        }
+        
+        p { color: #5a5a5a; font-size: 1.05rem; line-height: 1.6; margin: 10px 0; font-weight: 400; }
+
+        /* 🛠️ ปรับปรุงใหม่: ขยายขนาดความหนาของกรอบสีทองเพิ่มขึ้นอีกนิดให้เห็นชัดหรูหราสะดุดตา */
+        .media-container {
+            width: 100%;
+            height: 250px; 
+            background: #000000; /* พื้นหลังกรอบสีดำเพื่อความเนียนตาไปกับขอบวิดีโอ */
+            border-radius: 25px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 6px solid #f4e3b1; /* ขยายกรอบทองแชมเปญพาสเทลให้ใหญ่และหนาขึ้นเด่นชัด */
+            box-shadow: 0 12px 28px rgba(244, 227, 177, 0.65); /* เพิ่มความนุ่มนวลกระจายแสงเงาทองรอบขอบ */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* บังคับให้รูปและวิดีโอขยายชนขอบทองพอดีเป๊ะ */
+        .media-container img, .media-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* โถมเต็มพื้นที่พื้นที่กรอบพอดี ไม่เว้นขอบขาว */
+        }
+
+        /* ปุ่มกดสีทองหรูหรา (Premium Gold Button) */
+        .btn-love { 
+            background: linear-gradient(135deg, #f4e3b1 0%, #d4af37 100%); 
+            color: #5c4d1a; 
+            border: none; 
+            padding: 16px 30px; border-radius: 25px; 
+            font-size: 1.2rem; font-weight: 600; cursor: pointer; 
+            margin-top: 15px; width: 100%;
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.35), inset 0 1px 0 rgba(255,255,255,0.4);
+            transition: 0.2s ease;
+        }
+        .btn-love:active { transform: translateY(3px); box-shadow: 0 3px 5px rgba(212, 175, 55, 0.3); }
+
+        /* ปุ่มเล่นซ้ำหน้าสุดท้าย โทนชมพูทองซอฟต์มุก */
+        .btn-retry { 
+            background: linear-gradient(135deg, #fff0f3 0%, #ffe5ec 100%);
+            color: #ff7096; 
+            border: 2px solid #ffccd5; 
+            padding: 15px 30px; border-radius: 50px; 
+            font-size: 1.1rem; font-weight: 600; cursor: pointer; 
+            margin-top: 15px; width: 100%;
+            box-shadow: 0 5px 15px rgba(255, 143, 171, 0.15);
+            transition: 0.2s ease;
+        }
+        .btn-retry:active { transform: translateY(2px); box-shadow: 0 2px 5px rgba(255, 143, 171, 0.15); }
+
+        /* เอฟเฟกต์หัวใจปลิวพาสเทล */
+        .heart {
+            position: absolute; color: #ffb7b2; font-size: 24px;
+            animation: floatUp 4s linear infinite; bottom: -30px;
+            z-index: 1; pointer-events: none;
+            filter: drop-shadow(0 2px 5px rgba(255,183,178,0.5));
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="music-control-panel">
+        <div class="music-info">
+            <span class="track-title">นี่เพลงรัก</span>
+            <span class="artist-name">Three Man Down</span>
+        </div>
+        <div class="music-controls">
+            <button class="music-btn" id="play-pause-btn" onclick="toggleMusic()">⏸</button>
+            <input type="range" class="volume-slider" id="volume-control" min="0" max="1" step="0.1" value="0.8" oninput="changeVolume(this.value)">
+        </div>
+    </div>
+
+    <div id="page1" class="card" style="display: block;">
+        <div class="media-container">
+            <video id="video1" playsinline loop muted>
+                <source src="video1.mp4" type="video/mp4">
+            </video>
+        </div>
+        <h1>Happy Anniversary! 💖</h1>
+        <p>มีของขวัญชิ้นเล็กๆ อยากให้เปิดดูน้า<br><b>เปิดเสียงเพื่อฟังเพลงรักกันนะค้ะ</b></p>
+        <button class="btn-love" onclick="nextPage(2)">เปิดกล่องความทรงจำ 🎁</button>
+    </div>
+
+    <div id="page2" class="card">
+        <div class="media-container">
+            <video id="video2" playsinline loop muted>
+                <source src="video2.mp4" type="video/mp4">
+            </video>
+        </div>
+        <h1>เดินทางมา 7 เดือนแล้วนะ 💖</h1>
+        <p>ขอบคุณความรัก ขอบคุณความใส่ใจ<br>ขอบคุณที่คอยอยู่ข้างๆ กันในทุกๆ วันนะค้ะ</p>
+        <button class="btn-love" onclick="nextPage(3)">อ่านต่อตรงนี้จ้า 💌</button>
+    </div>
+
+    <div id="page3" class="card">
+        <div class="media-container">
+            <img src="pg3.jpg" alt="รูปที่ 3">
+        </div>
+        <h1>รักแฟนที่สุดเลยนะค้ะ 💖</h1>
+        <p>ถึงบางทีจะมีตีกันบ้างน้อยใจกันบ้าง<br>แต่พี่จะอยู่กวนใจหนูแบบนี้ไปนานๆ น้าา เด็กแสบ 🧸✨</p>
+        <button class="btn-retry" onclick="restartGame()">↺ ย้อนดูอีกรอบนะค้ะ</button>
+    </div>
+
+    <audio id="love-song" loop autoplay><source src="lovesong.mp3" type="audio/mpeg"></audio>
+
+    <script>
+        const loveSong = document.getElementById('love-song');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const video1 = document.getElementById('video1');
+        const video2 = document.getElementById('video2');
+        let heartInterval;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loveSong.volume = 0.8;
+            video1.play().catch(e => console.log("Video 1 playback blocked"));
+            
+            loveSong.play().then(() => {
+                if(!heartInterval) heartInterval = setInterval(createHeart, 400);
+            }).catch(e => {
+                document.body.addEventListener('click', () => {
+                    if (loveSong.paused) {
+                        loveSong.play();
+                        if(!heartInterval) heartInterval = setInterval(createHeart, 400);
+                    }
+                    video1.play().catch(e => console.log(e));
+                }, { once: true });
+            });
+        });
+
+        function toggleMusic() {
+            if (loveSong.paused) {
+                loveSong.play();
+                playPauseBtn.innerText = '⏸';
+                if(!heartInterval) heartInterval = setInterval(createHeart, 400);
+            } else {
+                loveSong.pause();
+                playPauseBtn.innerText = '▶';
+                clearInterval(heartInterval);
+                heartInterval = null;
+            }
+        }
+
+        function changeVolume(val) {
+            loveSong.volume = val;
+        }
+
+        function nextPage(pageNum) {
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page3').style.display = 'none';
+            document.getElementById('page' + pageNum).style.display = 'block';
+            
+            if (pageNum === 1) {
+                video1.play().catch(e => console.log(e));
+                video2.pause(); video2.currentTime = 0;
+            } else if (pageNum === 2) {
+                video2.play().catch(e => console.log(e));
+                video1.pause(); video1.currentTime = 0;
+            } else {
+                video1.pause(); video1.currentTime = 0;
+                video2.pause(); video2.currentTime = 0;
+            }
+
+            if (loveSong.paused) {
+                loveSong.play().catch(e => console.log(e));
+                playPauseBtn.innerText = '⏸';
+            }
+            if(!heartInterval) heartInterval = setInterval(createHeart, 400);
+        }
+
+        function restartGame() {
+            loveSong.currentTime = 0;
+            nextPage(1);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            const size = Math.random() * 15 + 15;
+            heart.style.fontSize = size + 'px';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            document.body.appendChild(heart);
+            
+            setTimeout(() => { heart.remove(); }, 4000);
+        }
+    </script>
+</body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>เว็บแกล้งแฟน 😜 Ver. Mobile</title>
+    <style>
+        body {
+            background-color: #fdf2f2;
+            font-family: 'Kanit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            /* ป้องกันการเลื่อนหน้าจอไปมาบนมือถือ */
+            touch-action: none;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 85%;
+            max-width: 350px;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        h1 { color: #ff4d6d; font-size: 20px; margin-bottom: 10px; }
+        p { color: #555; font-size: 14px; }
+
+        .btn-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            height: 180px;
+            position: relative;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-family: 'Kanit', sans-serif;
+            -webkit-tap-highlight-color: transparent; /* ลบสีฟ้าตอนกดบนมือถือ */
+        }
+
+        .yes-btn-wrapper {
+            display: none; /* ซ่อนไว้ก่อน */
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            order: 2;
+        }
+
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        .hint-text {
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+            background: #ffeb3b;
+            padding: 3px 10px;
+            border-radius: 5px;
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+
+        #noBtn {
+            background-color: #000000;
+            color: #ff0000;
+            padding: 15px 30px; 
+            border-radius: 15px;
+            font-size: 20px; 
+            font-weight: bold;
+            border: 3px solid #ff0000;
+            position: relative; /* เริ่มต้นเป็น relative */
+            z-index: 99;
+            transition: 0.1s ease-out;
+        }
+
+        .hidden { display: none; }
+
+        .celebrate-img {
+            width: 100%;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+            margin-top: 15px;
+            font-size: 12px;
+            padding: 8px 15px;
+            border-radius: 50px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div id="game-card" class="card">
+        <h1 id="questionText">วันนี้ไปกินส้มตำกันมั้ย? 🥗</h1>
+        <p id="subText">ลองกดปุ่มดูสิ! 😏</p>
+        <div class="btn-container" id="container">
+            
+            <div class="yes-btn-wrapper" id="yesWrapper">
+                <span class="hint-text">👇 ยอมแล้ว กดตรงนี้!</span>
+                <button id="yesBtn" onclick="nextStep()">ไปสิ!</button>
+            </div>
+            
+            <!-- ใช้ touchstart สำหรับมือถือเพื่อให้กดแล้วหนีทันที -->
+            <button id="noBtn" ontouchstart="moveButton()" onclick="moveButton()">ไม่ไป!</button>
+
+        </div>
+    </div>
+
+    <div id="result-card" class="card hidden">
+        <h1>เย้! เจอกันตอนเย็นนะ</h1>
+        <p>เดี๋ยวไปรับครับ ❤️</p>
+        <img src="dd.png" class="celebrate-img">
+        <br>
+        <button class="back-btn" onclick="resetGame()">เล่นอีกรอบ</button>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let escapeCount = 0;
+        const noBtn = document.getElementById('noBtn');
+        const yesWrapper = document.getElementById('yesWrapper');
+        const questionText = document.getElementById('questionText');
+        const subText = document.getElementById('subText');
+        const yesBtn = document.getElementById('yesBtn');
+        const container = document.getElementById('container');
+
+        function moveButton() {
+            escapeCount++;
+
+            // ทำให้ปุ่มเป็น absolute ตั้งแต่กดครั้งแรก
+            if (noBtn.style.position !== 'absolute') {
+                noBtn.style.position = 'absolute';
+            }
+
+            if (escapeCount >= 5) {
+                yesWrapper.style.display = 'flex';
+                subText.innerText = "ยอมแพ้แล้ว กดปุ่มชมพูเลย!";
+            }
+
+            // คำนวณให้วิ่งอยู่แค่ในขอบเขตของการ์ด เพื่อไม่ให้หายออกนอกจอมือถือ
+            const card = document.querySelector('.card');
+            const maxX = card.clientWidth - noBtn.offsetWidth - 20;
+            const maxY = card.clientHeight - noBtn.offsetHeight - 20;
+
+            // สุ่มตำแหน่งใหม่ภายในตัวการ์ด
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+
+            const phrases = ["วืด!", "ไม่โดน!", "ทางนี้!", "ฮั่นแน่", "อุ๊ย"];
+            noBtn.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+        }
+
+        function nextStep() {
+            currentStep++;
+            if (currentStep === 1) {
+                questionText.innerText = "แน่ใจหรอ? 🤔";
+                yesBtn.innerText = "แน่ใจสิ!";
+            } else if (currentStep === 2) {
+                questionText.innerText = "แน่ใจจริงๆ นะ? 🤨";
+                yesBtn.innerText = "บอกว่าแน่ใจไง!";
+            } else {
+                finishGame();
+            }
+        }
+
+        function finishGame() {
+            document.getElementById('game-card').classList.add('hidden');
+            document.getElementById('result-card').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            location.reload(); // รีโหลดหน้าจอจะง่ายที่สุดสำหรับเวอร์ชันมือถือ
+        }
+    </script>
+</body>
+
+>>>>>>> origin/main
+</html>
